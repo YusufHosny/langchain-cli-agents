@@ -1024,7 +1024,7 @@ wheels = [
 [[package]]
 name = "openai-cli-agents"
 version = "0.1.0"
-source = { git = "https://github.com/YusufHosny/openai-cli-agents?rev=main#725f5947987f5c6023cae7bda791fe1c1f68a4bc" }
+source = { git = "https://github.com/YusufHosny/openai-cli-agents?rev=main#35e74d29c479244bfb746c473ddcf08ca9de46cc" }
 
 [[package]]
 name = "openapi-pydantic"

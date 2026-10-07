@@ -859,10 +859,11 @@ wheels = [
 
 [[package]]
 name = "langchain-cli-agents"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "langchain-core" },
+    { name = "openai-cli-agents" },
     { name = "pydantic" },
 ]
 
@@ -882,6 +883,7 @@ dev = [
 requires-dist = [
     { name = "fastmcp", marker = "extra == 'mcp'", specifier = ">=2" },
     { name = "langchain-core", specifier = ">=0.3" },
+    { name = "openai-cli-agents", git = "https://github.com/YusufHosny/openai-cli-agents?rev=main" },
     { name = "pydantic", specifier = ">=2" },
     { name = "uvicorn", marker = "extra == 'mcp'" },
 ]
@@ -1018,6 +1020,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/de/1d/f4da6f02cdffe04d6
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e8/3d/1087453384dbde46a8c7f9356eead2c58be8a7bf156bca40243377c85715/more_itertools-11.1.0-py3-none-any.whl", hash = "sha256:4b65538ae22f6fed0ce4874efd317463a7489796a0939fa66824dd542125a192", size = 72226, upload-time = "2026-05-22T14:14:28.824Z" },
 ]
+
+[[package]]
+name = "openai-cli-agents"
+version = "0.1.0"
+source = { git = "https://github.com/YusufHosny/openai-cli-agents?rev=main#35e74d29c479244bfb746c473ddcf08ca9de46cc" }
 
 [[package]]
 name = "openapi-pydantic"

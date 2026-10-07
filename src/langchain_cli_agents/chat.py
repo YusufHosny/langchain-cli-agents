@@ -18,13 +18,11 @@ from langchain_core.prompt_values import PromptValue
 from langchain_core.runnables import Runnable, RunnableLambda
 from pydantic import BaseModel
 
-from langchain_cli_agents.core import CLIResult, SystemMode
+from openai_cli_agents.core import (
+  DEFAULT_SYSTEM_MODE, STRUCTURED_FMT, CLIResult, SystemMode, Turn, extract_json, flatten_turns,
+)
 
 _logger = logging.getLogger("langchain_cli_agents.chat")
-
-_STRUCTURED_FMT = ("You MUST respond with ONLY a single JSON object that conforms to "
-                   "this JSON Schema. No markdown, no code fences, no commentary.\n"
-                   "JSON Schema:\n{schema}")
 
 
 def to_messages(x: Any) -> list[BaseMessage]:
@@ -39,57 +37,10 @@ def to_messages(x: Any) -> list[BaseMessage]:
   raise TypeError(f"cannot coerce {type(x)} to messages")
 
 
-# headless CLIs take one prompt string, so a conversation is flattened into
-# (system, transcript); role prefixes only once there is more than a system+user pair
+# transcript role labels are the langchain message types (HUMAN: / AI:)
 def split_messages(messages: list[BaseMessage]) -> tuple[str, str]:
-  sys_parts, conv_parts = [], []
-  for m in messages:
-    content = m.content if isinstance(m.content, str) else str(m.content)
-    if isinstance(m, SystemMessage):
-      sys_parts.append(content)
-    else:
-      role = getattr(m, "type", "human")
-      conv_parts.append(f"{role.upper()}: {content}" if len(messages) > 2 else content)
-  return "\n\n".join(sys_parts), "\n\n".join(conv_parts)
-
-
-def extract_json(text: str) -> Any | None:
-  t = text.strip()
-  if t.startswith("```"):
-    t = t.split("```", 2)[1] if t.count("```") >= 2 else t
-    if t.startswith("json"):
-      t = t[4:]
-    t = t.strip("` \n")
-  try:
-    return json.loads(t)
-  except json.JSONDecodeError:
-    pass
-  # fall back to the first balanced {...} object, string-aware
-  start = t.find("{")
-  if start == -1:
-    return None
-  depth, in_str, esc = 0, False, False
-  for i in range(start, len(t)):
-    c = t[i]
-    if in_str:
-      if esc:
-        esc = False
-      elif c == "\\":
-        esc = True
-      elif c == '"':
-        in_str = False
-    elif c == '"':
-      in_str = True
-    elif c == "{":
-      depth += 1
-    elif c == "}":
-      depth -= 1
-      if depth == 0:
-        try:
-          return json.loads(t[start:i + 1])
-        except json.JSONDecodeError:
-          return None
-  return None
+  return flatten_turns([Turn(m.type, m.content if isinstance(m.content, str) else str(m.content))
+                        for m in messages])
 
 
 def _empty_usage() -> dict[str, float]:
@@ -101,7 +52,7 @@ class ChatCLIBase(BaseChatModel, abc.ABC):
   model: str
   timeout: int = 600
   structured_retries: int = 3
-  system_mode: SystemMode = "append"
+  system_mode: SystemMode = DEFAULT_SYSTEM_MODE
 
   model_config = {"arbitrary_types_allowed": True}
 
@@ -151,7 +102,7 @@ class ChatCLIBase(BaseChatModel, abc.ABC):
     return ChatResult(generations=[ChatGeneration(message=msg)])
 
   def with_structured_output(self, schema: type[BaseModel], **kwargs: Any) -> Runnable:  # type: ignore[override]
-    fmt = _STRUCTURED_FMT.format(schema=json.dumps(schema.model_json_schema()))
+    fmt = STRUCTURED_FMT.format(schema=json.dumps(schema.model_json_schema()))
     model = self
 
     def _run(x: Any, config=None) -> BaseModel | None:

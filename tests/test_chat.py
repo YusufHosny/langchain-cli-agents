@@ -3,7 +3,7 @@
 from pydantic import BaseModel, Field
 
 from langchain_cli_agents.chat import ChatCLIBase, extract_json, split_messages
-from langchain_cli_agents.core import CLIResult
+from openai_cli_agents.core import CLIResult
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 

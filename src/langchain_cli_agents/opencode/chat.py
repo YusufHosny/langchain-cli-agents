@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import Any
 
 from langchain_cli_agents.chat import ChatCLIBase
-from langchain_cli_agents.core import CLIResult
-from langchain_cli_agents.opencode.cli import OpenCodeCLI
+from openai_cli_agents.core import CLIResult
+from openai_cli_agents.opencode import OpenCodeCLI
 
 
 class ChatOpenCodeCLI(ChatCLIBase):

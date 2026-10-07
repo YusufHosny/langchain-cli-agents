@@ -4,13 +4,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "langchain-cli-agents"
-version = "0.1.0"
+version = "0.2.0"
 description = "Drive claude -p and opencode as LangChain chat models and MCP tool-calling agents"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "langchain-core>=0.3",
   "pydantic>=2",
+  # the raw CLI harnesses (ClaudeCLI, OpenCodeCLI, CLIResult, ...); a direct reference so it
+  # resolves for consumers too, which do not inherit [tool.uv.sources]
+  "openai-cli-agents @ git+https://github.com/YusufHosny/openai-cli-agents@main",
 ]
 
 [project.optional-dependencies]
@@ -18,6 +21,9 @@ mcp = ["fastmcp>=2", "uvicorn"]
 
 [dependency-groups]
 dev = ["pytest>=8", "langchain-cli-agents[mcp]"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

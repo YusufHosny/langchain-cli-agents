@@ -1,4 +1,4 @@
-# langchain_cli_agents
+# langchain-cli-agents
 
 A wrapper library to use coding agent CLI's in code.
 
@@ -8,10 +8,16 @@ A wrapper library to use coding agent CLI's in code.
 | LangChain | `ChatClaudeCLI` | `ChatOpenCodeCLI` | `BaseChatModel` with `.invoke` and prompt-enforced `.with_structured_output` |
 | tool agent | `ClaudeCodeAgent` | `OpenCodeAgent` | multi-turn tool-calling over an MCP endpoint → `AgentAnswer` |
 
+The raw CLI layer lives in [`openai-cli-agents`](https://github.com/YusufHosny/openai-cli-agents)
+(re-exported here), which also serves it behind an OpenAI-compatible API.
+
+`system_mode` defaults to `"replace"`: only your system prompt is sent, never the harness default
+(claude code's prompt or built-in tools). Pass `system_mode="append"` for the pre-0.2 behaviour.
+
 ## Install
 
 ```bash
-uv add "langchain-cli-agents[mcp] @ git+https://github.com/YusufHosny/langchain_cli_agents"
+uv add "langchain-cli-agents[mcp] @ git+https://github.com/YusufHosny/langchain-cli-agents"
 ```
 
 The `[mcp]` extra (fastmcp and uvicorn) is only needed for `serve_tools`/`serve_object`.

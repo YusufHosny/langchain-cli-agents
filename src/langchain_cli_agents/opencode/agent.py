@@ -6,9 +6,9 @@ import json
 import threading
 
 from langchain_cli_agents.agent import AgentAnswer, ToolAgent
-from langchain_cli_agents.core import CLIResult, PauseGate, SystemMode
+from openai_cli_agents.core import DEFAULT_SYSTEM_MODE, CLIResult, PauseGate, SystemMode
 from langchain_cli_agents.mcp import MCPEndpoint
-from langchain_cli_agents.opencode.server import (
+from openai_cli_agents.opencode.server import (
   OpenCodeServer, agent_config, get_json, message_body, parse_message, send_message, split_model,
 )
 
@@ -57,7 +57,7 @@ class OpenCodeAgent(ToolAgent):
     model: str = "opencode/x-preview-f-free",
     timeout: int = 150,
     binary: str = "opencode",
-    system_mode: SystemMode = "append",
+    system_mode: SystemMode = DEFAULT_SYSTEM_MODE,
     auto_pause: bool = True,
     backoff_seconds: float = 120.0,
     max_transient_retries: int = 8,

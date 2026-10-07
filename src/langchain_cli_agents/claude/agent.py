@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 from langchain_cli_agents.agent import AgentAnswer, ToolAgent
-from langchain_cli_agents.claude.cli import ClaudeCLI
-from langchain_cli_agents.core import SystemMode
+from openai_cli_agents.claude import ClaudeCLI
+from openai_cli_agents.core import DEFAULT_SYSTEM_MODE, SystemMode
 from langchain_cli_agents.mcp import MCPEndpoint
 
 
 class ClaudeCodeAgent(ToolAgent):
   def __init__(self, model: str = "sonnet", timeout: int = 300,
-               system_mode: SystemMode = "append", cli: ClaudeCLI | None = None) -> None:
+               system_mode: SystemMode = DEFAULT_SYSTEM_MODE, cli: ClaudeCLI | None = None) -> None:
     self.cli = cli if cli is not None else ClaudeCLI(model=model, timeout=timeout)
     self.system_mode = system_mode
 
